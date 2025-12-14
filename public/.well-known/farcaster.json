@@ -14,15 +14,16 @@
     "description": "Answer 10 IQ-style questions under time pressure. Test your logic, patterns, and problem-solving abilities in this fun quiz challenge.",
     "homeUrl": "https://base-quizz.vercel.app",
     "iconUrl": "https://base-quizz.vercel.app/icon.png",
-    "splashImageUrl": "https://base-quizz.vercel.app/icon.png",
+    "splashImageUrl": "https://base-quizz.vercel.app/splash.png",
     "splashBackgroundColor": "#1e293b",
-    "heroImageUrl": "https://base-quizz.vercel.app/icon.png",
+    "heroImageUrl": "https://base-quizz.vercel.app/hero.png",
     "screenshotUrls": [
-      "https://base-quizz.vercel.app/screenshots/screenshot1.png"
+      "https://base-quizz.vercel.app/screenshots/screenshot1.png",
+      "https://base-quizz.vercel.app/screenshots/screenshot2.png"
     ],
     "ogTitle": "IQ Quiz Contest",
     "ogDescription": "Test your IQ with 10 logic and pattern recognition questions. Can you beat the clock?",
-    "ogImageUrl": "https://base-quizz.vercel.app/icon.png",
+    "ogImageUrl": "https://base-quizz.vercel.app/og-image.png",
     "tagline": "How smart are you?",
     "primaryCategory": "games",
     "tags": ["quiz", "iq", "brain", "logic", "puzzle"],
