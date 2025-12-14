@@ -1,13 +1,16 @@
-import sdk, { type Context } from "@farcaster/miniapp-sdk"
+import sdk from "@farcaster/miniapp-sdk"
+
+// Infer the context type from the SDK
+export type FarcasterContext = Awaited<typeof sdk.context>
 
 let isInitialized = false
-let cachedContext: Context.MiniApp | null = null
+let cachedContext: FarcasterContext | null = null
 
 /**
  * Initialize the Farcaster Mini App SDK
  * Call this once when the app loads to signal readiness to the Farcaster client
  */
-export async function initializeFarcasterSDK(): Promise<Context.MiniApp | null> {
+export async function initializeFarcasterSDK(): Promise<FarcasterContext | null> {
   if (isInitialized && cachedContext) return cachedContext
 
   try {
@@ -50,7 +53,7 @@ export function isInFarcasterContext(): boolean {
 /**
  * Get the cached Farcaster context
  */
-export function getFarcasterContext(): Context.MiniApp | null {
+export function getFarcasterContext(): FarcasterContext | null {
   return cachedContext
 }
 

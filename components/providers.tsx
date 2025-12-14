@@ -4,19 +4,18 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
 import { WagmiProvider } from "wagmi"
 import { useState, useEffect, createContext, useContext, type ReactNode } from "react"
 import { wagmiConfig } from "@/lib/wagmi-config"
-import { initializeFarcasterSDK, getFarcasterContext, getSafeAreaInsets } from "@/lib/farcaster-sdk"
-import type { Context } from "@farcaster/miniapp-sdk"
+import { initializeFarcasterSDK, getSafeAreaInsets, type FarcasterContext } from "@/lib/farcaster-sdk"
 
-// Farcaster Context
+// Farcaster Context Type
 interface FarcasterContextType {
-  context: Context.MiniApp | null
+  context: FarcasterContext | null
   isLoading: boolean
   isInMiniApp: boolean
   safeAreaInsets: { top: number; bottom: number; left: number; right: number }
-  user: Context.MiniApp["user"] | null
+  user: FarcasterContext["user"] | null
 }
 
-const FarcasterContext = createContext<FarcasterContextType>({
+const FarcasterContextProvider = createContext<FarcasterContextType>({
   context: null,
   isLoading: true,
   isInMiniApp: false,
@@ -25,7 +24,7 @@ const FarcasterContext = createContext<FarcasterContextType>({
 })
 
 export function useFarcaster() {
-  return useContext(FarcasterContext)
+  return useContext(FarcasterContextProvider)
 }
 
 interface ProvidersProps {
@@ -70,10 +69,10 @@ export function Providers({ children }: ProvidersProps) {
   }, [])
 
   return (
-    <FarcasterContext.Provider value={farcasterState}>
+    <FarcasterContextProvider.Provider value={farcasterState}>
       <WagmiProvider config={wagmiConfig}>
         <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
       </WagmiProvider>
-    </FarcasterContext.Provider>
+    </FarcasterContextProvider.Provider>
   )
 }
