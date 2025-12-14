@@ -100,11 +100,11 @@ export async function closeMiniApp(): Promise<void> {
 /**
  * Share a cast/post to Farcaster
  */
-export async function composeCast(text: string, embeds?: string[]): Promise<void> {
+export async function composeCast(text: string, embeds?: [string] | [string, string]): Promise<void> {
   try {
     await sdk.actions.composeCast({
       text,
-      embeds: embeds?.map(url => ({ url })),
+      embeds,
     })
   } catch (error) {
     console.error("Failed to compose cast:", error)
