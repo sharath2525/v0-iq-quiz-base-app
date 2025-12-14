@@ -4,7 +4,10 @@
     "payload": "eyJkb21haW4iOiJ2MC1pcS1xdWl6LWFwcC1yb2FuLnZlcmNlbC5hcHAifQ",
     "signature": "bBVpe49QHnWlLccDWq+6bxG3gO7s7m4LqtwJeQuw9WNnCQ2rtUs/zJ13T+e08tuD3SwkkH/Rg3EbFsWI/uYq1xw="
   },
-  "frame": {
+  "baseBuilder": {
+    "allowedAddresses": ["0x362958481000c0d3214BEb4Ce60abbB4BD5177F9"]
+  },
+  "miniapp": {
     "version": "1",
     "name": "IQ Quiz Contest",
     "subtitle": "Test your logic skills",
@@ -13,10 +16,10 @@
     "iconUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
     "splashImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
     "splashBackgroundColor": "#1e293b",
+    "heroImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
     "ogTitle": "IQ Quiz Contest",
     "ogDescription": "Test your IQ with 10 logic and pattern recognition questions. Can you beat the clock?",
-    "ogImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/image.png",
-    "heroImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/image.png",
+    "ogImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
     "tagline": "How smart are you?",
     "primaryCategory": "games",
     "tags": ["quiz", "iq", "brain", "logic", "puzzle"],

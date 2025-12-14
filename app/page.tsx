@@ -9,7 +9,7 @@ import { ResultsScreen } from "@/components/results-screen"
 import { AnswerBreakdownScreen } from "@/components/answer-breakdown-screen"
 import { PaymentGate } from "@/components/payment-gate"
 import { type Category, type Quiz, type Question, calculateScore } from "@/lib/quiz-data"
-import { initializeFarcasterSDK } from "@/lib/farcaster-sdk"
+import { useFarcaster } from "@/components/providers"
 
 // Extended app states to include category navigation
 export type AppState = 
@@ -32,6 +32,9 @@ export interface QuizResult {
 }
 
 export default function Home() {
+  // Farcaster context (SDK initialized in providers)
+  const { safeAreaInsets, isLoading } = useFarcaster()
+
   // Navigation state
   const [appState, setAppState] = useState<AppState>("home")
   const [selectedCategory, setSelectedCategory] = useState<Category | null>(null)
@@ -42,11 +45,6 @@ export default function Home() {
   const [userAnswers, setUserAnswers] = useState<(number | null)[]>([])
   const [timeRemaining, setTimeRemaining] = useState(600)
   const [quizResult, setQuizResult] = useState<QuizResult | null>(null)
-
-  // Initialize Farcaster SDK on mount
-  useEffect(() => {
-    initializeFarcasterSDK()
-  }, [])
 
   // Timer effect
   useEffect(() => {
@@ -173,8 +171,25 @@ export default function Home() {
   // RENDER
   // ============================================
 
+  // Show loading while SDK initializes
+  if (isLoading) {
+    return (
+      <main className="min-h-screen w-full bg-[#F5F7FF] flex items-center justify-center">
+        <div className="animate-pulse text-[#1A4BE8] text-lg font-semibold">Loading...</div>
+      </main>
+    )
+  }
+
   return (
-    <main className="min-h-screen w-full bg-[#F5F7FF] py-6 px-4 sm:py-8">
+    <main 
+      className="min-h-screen w-full bg-[#F5F7FF] py-6 px-4 sm:py-8"
+      style={{
+        paddingTop: `calc(1.5rem + ${safeAreaInsets.top}px)`,
+        paddingBottom: `calc(1.5rem + ${safeAreaInsets.bottom}px)`,
+        paddingLeft: `calc(1rem + ${safeAreaInsets.left}px)`,
+        paddingRight: `calc(1rem + ${safeAreaInsets.right}px)`,
+      }}
+    >
       {/* Home - Category Selection */}
       {appState === "home" && (
         <HomeScreen onSelectCategory={handleSelectCategory} />

@@ -5,6 +5,7 @@ import { Button } from "./ui/button"
 import sdk from "@farcaster/miniapp-sdk"
 import { createWalletClient, custom, parseEther, type Hash } from "viem"
 import { base } from "viem/chains"
+import { openUrl } from "@/lib/farcaster-sdk"
 
 export type PaymentStatus =
   | "idle"
@@ -265,14 +266,12 @@ export function PaymentGate({ onPaymentSuccess, onCancel }: PaymentGateProps) {
               <div className="px-6 pb-6">
                 <div className="bg-[#EEF1FB] rounded-2xl p-4">
                   <p className="text-xs font-semibold text-[#4A4A4A] mb-2">TRANSACTION</p>
-                  <a
-                    href={`https://basescan.org/tx/${txHash}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-xs text-[#1A4BE8] hover:underline font-mono break-all"
+                  <button
+                    onClick={() => openUrl(`https://basescan.org/tx/${txHash}`)}
+                    className="text-xs text-[#1A4BE8] hover:underline font-mono break-all text-left"
                   >
                     {txHash}
-                  </a>
+                  </button>
                 </div>
               </div>
             )}
