@@ -23,6 +23,7 @@ export const metadata: Metadata = {
     "Take a fun 10-question IQ-style quiz under time pressure. Answer logic puzzles, number sequences, and pattern recognition questions in 10 minutes.",
   // Farcaster Mini App meta tags (new format)
   other: {
+    "base:app_id": "693afd76e6be54f5ed71d66a",
     "fc:miniapp": JSON.stringify({
       version: "next",
       imageUrl: "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
