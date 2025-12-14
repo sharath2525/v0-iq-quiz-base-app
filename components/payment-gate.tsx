@@ -6,6 +6,7 @@ import sdk from "@farcaster/miniapp-sdk"
 import { createWalletClient, custom, parseEther, type Hash } from "viem"
 import { base } from "viem/chains"
 import { openUrl } from "@/lib/farcaster-sdk"
+import { UserProfile } from "./user-profile"
 
 export type PaymentStatus =
   | "idle"
@@ -219,8 +220,13 @@ export function PaymentGate({ onPaymentSuccess, onCancel }: PaymentGateProps) {
         <div className="relative">
           {/* Main Card */}
           <div className="bg-white rounded-3xl shadow-xl shadow-[rgba(0,0,0,0.08)] border border-[#D7DDF0] overflow-hidden">
+            {/* User Profile Header */}
+            <div className="pt-6 px-6 pb-4">
+              <UserProfile size="md" showUsername={true} className="justify-center" />
+            </div>
+
             {/* Icon Section */}
-            <div className="pt-8 pb-6 text-center">
+            <div className="pt-2 pb-6 text-center">
               <div className={`inline-flex items-center justify-center w-20 h-20 rounded-2xl ${display.iconBg} 
                 shadow-lg mb-4 ${isLoading ? 'animate-pulse' : ''}`}>
                 {isLoading ? (

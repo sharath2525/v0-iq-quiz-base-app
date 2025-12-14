@@ -1,12 +1,16 @@
 "use client"
 
 import { QUIZ_CATEGORIES, type Category } from "@/lib/quiz-data"
+import { UserProfile } from "./user-profile"
+import { useFarcaster } from "./providers"
 
 interface HomeScreenProps {
   onSelectCategory: (category: Category) => void
 }
 
 export function HomeScreen({ onSelectCategory }: HomeScreenProps) {
+  const { user } = useFarcaster()
+
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md px-4">
@@ -16,10 +20,16 @@ export function HomeScreen({ onSelectCategory }: HomeScreenProps) {
           <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[#4E8CFF]/10 rounded-full blur-3xl" />
         </div>
 
-        {/* Content */}
         <div className="relative">
+          {/* User Profile Header */}
+          {user && (
+            <div className="mb-6 flex justify-end">
+              <UserProfile size="sm" showUsername={true} />
+            </div>
+          )}
+
           {/* Header */}
-          <div className="text-center mb-10">
+          <div className="text-center mb-8">
             {/* Logo Icon */}
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1A4BE8] to-[#0E2C83] shadow-lg shadow-[#1A4BE8]/30 mb-5">
               <span className="text-3xl">🧠</span>
@@ -31,9 +41,24 @@ export function HomeScreen({ onSelectCategory }: HomeScreenProps) {
               </span>
             </h1>
             
-            <p className="text-[#4A4A4A] font-medium text-sm">
+            <p className="text-[#4A4A4A] font-medium text-base mb-4">
               Challenge yourself • Learn something new
             </p>
+
+            {/* Onboarding Description */}
+            <div className="max-w-sm mx-auto mb-6">
+              <div className="bg-[#EEF1FB] border border-[#D7DDF0] rounded-2xl p-4 text-left">
+                <h3 className="text-sm font-bold text-[#1A1A1A] mb-2 flex items-center gap-2">
+                  <span>📚</span> How it works
+                </h3>
+                <ol className="text-xs text-[#4A4A4A] space-y-1.5 list-decimal list-inside">
+                  <li>Choose a quiz category that interests you</li>
+                  <li>Answer 10 questions under time pressure</li>
+                  <li>Complete a small payment to unlock your results</li>
+                  <li>See your IQ score and detailed breakdown</li>
+                </ol>
+              </div>
+            </div>
           </div>
 
           {/* Categories Grid */}
