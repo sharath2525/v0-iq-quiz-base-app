@@ -26,13 +26,13 @@ export const metadata: Metadata = {
     "base:app_id": "693afd76e6be54f5ed71d66a",
     "fc:miniapp": JSON.stringify({
       version: "next",
-      imageUrl: "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
+      imageUrl: "https://base-quizz.vercel.app/icon.png",
       button: {
         title: "Take IQ Quiz",
         action: {
           type: "launch_miniapp",
           name: "IQ Quiz Contest",
-          url: "https://v0-iq-quiz-app-roan.vercel.app"
+          url: "https://base-quizz.vercel.app"
         }
       }
     }),
@@ -42,7 +42,7 @@ export const metadata: Metadata = {
     description: "Test your IQ with 10 logic and pattern recognition questions. Can you beat the clock?",
     images: [
       {
-        url: "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
+        url: "https://base-quizz.vercel.app/icon.png",
         width: 1200,
         height: 630,
         alt: "IQ Quiz Contest",

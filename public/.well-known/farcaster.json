@@ -1,8 +1,8 @@
 {
   "accountAssociation": {
-    "header": "eyJmaWQiOjM4ODEyMywidHlwZSI6ImF1dGgiLCJrZXkiOiIweDM2Mjk1ODQ4MTAwMGMwZDMyMTRCRWI0Q2U2MGFiYkI0QkQ1MTc3RjkifQ",
-    "payload": "eyJkb21haW4iOiJ2MC1pcS1xdWl6LWFwcC1yb2FuLnZlcmNlbC5hcHAifQ",
-    "signature": "bBVpe49QHnWlLccDWq+6bxG3gO7s7m4LqtwJeQuw9WNnCQ2rtUs/zJ13T+e08tuD3SwkkH/Rg3EbFsWI/uYq1xw="
+    "header": "",
+    "payload": "",
+    "signature": ""
   },
   "baseBuilder": {
     "allowedAddresses": ["0x362958481000c0d3214BEb4Ce60abbB4BD5177F9"]
@@ -12,17 +12,21 @@
     "name": "IQ Quiz Contest",
     "subtitle": "Test your logic skills",
     "description": "Answer 10 IQ-style questions under time pressure. Test your logic, patterns, and problem-solving abilities in this fun quiz challenge.",
-    "homeUrl": "https://v0-iq-quiz-app-roan.vercel.app",
-    "iconUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
-    "splashImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
+    "homeUrl": "https://base-quizz.vercel.app",
+    "iconUrl": "https://base-quizz.vercel.app/icon.png",
+    "splashImageUrl": "https://base-quizz.vercel.app/icon.png",
     "splashBackgroundColor": "#1e293b",
-    "heroImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
+    "heroImageUrl": "https://base-quizz.vercel.app/icon.png",
+    "screenshotUrls": [
+      "https://base-quizz.vercel.app/screenshots/screenshot1.png"
+    ],
     "ogTitle": "IQ Quiz Contest",
     "ogDescription": "Test your IQ with 10 logic and pattern recognition questions. Can you beat the clock?",
-    "ogImageUrl": "https://v0-iq-quiz-app-roan.vercel.app/icon.png",
+    "ogImageUrl": "https://base-quizz.vercel.app/icon.png",
     "tagline": "How smart are you?",
     "primaryCategory": "games",
     "tags": ["quiz", "iq", "brain", "logic", "puzzle"],
-    "requiredChains": ["eip155:8453"]
+    "requiredChains": ["eip155:8453"],
+    "noindex": false
   }
 }
