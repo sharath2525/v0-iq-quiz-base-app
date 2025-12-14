@@ -10,6 +10,8 @@ import { AnswerBreakdownScreen } from "@/components/answer-breakdown-screen"
 import { PaymentGate } from "@/components/payment-gate"
 import { type Category, type Quiz, type Question, calculateScore } from "@/lib/quiz-data"
 import { useFarcaster } from "@/components/providers"
+import { AppHeader } from "@/components/app-header"
+import { WalletAutoConnect } from "@/components/wallet-auto-connect"
 
 // Extended app states to include category navigation
 export type AppState = 
@@ -181,15 +183,22 @@ export default function Home() {
   }
 
   return (
-    <main 
-      className="min-h-screen w-full bg-[#F5F7FF] py-6 px-4 sm:py-8"
-      style={{
-        paddingTop: `calc(1.5rem + ${safeAreaInsets.top}px)`,
-        paddingBottom: `calc(1.5rem + ${safeAreaInsets.bottom}px)`,
-        paddingLeft: `calc(1rem + ${safeAreaInsets.left}px)`,
-        paddingRight: `calc(1rem + ${safeAreaInsets.right}px)`,
-      }}
-    >
+    <>
+      {/* Auto-connect wallet when in Base app */}
+      <WalletAutoConnect />
+      
+      {/* Persistent App Header with User Profile */}
+      <AppHeader />
+      
+      <main 
+        className="min-h-screen w-full bg-[#F5F7FF] py-6 px-4 sm:py-8"
+        style={{
+          paddingTop: `calc(1.5rem + ${safeAreaInsets.top}px)`,
+          paddingBottom: `calc(1.5rem + ${safeAreaInsets.bottom}px)`,
+          paddingLeft: `calc(1rem + ${safeAreaInsets.left}px)`,
+          paddingRight: `calc(1rem + ${safeAreaInsets.right}px)`,
+        }}
+      >
       {/* Home - Category Selection */}
       {appState === "home" && (
         <HomeScreen onSelectCategory={handleSelectCategory} />
@@ -253,6 +262,7 @@ export default function Home() {
           onBack={() => setAppState("finished")}
         />
       )}
-    </main>
+      </main>
+    </>
   )
 }

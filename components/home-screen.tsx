@@ -1,16 +1,12 @@
 "use client"
 
 import { QUIZ_CATEGORIES, type Category } from "@/lib/quiz-data"
-import { UserProfile } from "./user-profile"
-import { useFarcaster } from "./providers"
 
 interface HomeScreenProps {
   onSelectCategory: (category: Category) => void
 }
 
 export function HomeScreen({ onSelectCategory }: HomeScreenProps) {
-  const { user } = useFarcaster()
-
   return (
     <div className="flex items-center justify-center min-h-screen">
       <div className="w-full max-w-md px-4">
@@ -21,15 +17,8 @@ export function HomeScreen({ onSelectCategory }: HomeScreenProps) {
         </div>
 
         <div className="relative">
-          {/* User Profile Header */}
-          {user && (
-            <div className="mb-6 flex justify-end">
-              <UserProfile size="sm" showUsername={true} />
-            </div>
-          )}
-
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 pt-12">
             {/* Logo Icon */}
             <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-[#1A4BE8] to-[#0E2C83] shadow-lg shadow-[#1A4BE8]/30 mb-5">
               <span className="text-3xl">🧠</span>

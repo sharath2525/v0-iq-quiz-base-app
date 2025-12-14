@@ -40,11 +40,6 @@ export function ResultsScreen({ result, onViewBreakdown, onRetake }: ResultsScre
         </div>
 
         <div className="relative">
-          {/* User Profile Header */}
-          <div className="mb-4 flex justify-end">
-            <UserProfile size="sm" showUsername={true} />
-          </div>
-
           {/* Quiz Info Badge */}
           <div className="flex justify-center mb-6">
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-[#D7DDF0] shadow-sm">
