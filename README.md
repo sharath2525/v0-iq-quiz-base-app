@@ -1,295 +1,386 @@
-# IQ Quiz Contest - Farcaster Mini App
+# 🧠 IQ Quiz Contest - Base Mini App
 
-A fun 10-question IQ-style quiz built as a Farcaster Mini App with on-chain payment gating on Base.
+A modern, interactive IQ-style quiz application built as a **Base Mini App** with seamless wallet integration, on-chain payments, and beautiful UI. Test your logic, pattern recognition, and problem-solving skills across multiple categories.
 
-## Features
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/yourusername/v0-iq-quiz-base-app)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-- 🧠 10 logic/pattern recognition questions
-- ⏱️ 10-minute time limit
-- 💎 Payment gating: 0.0000033 ETH on Base to reveal score
-- 🔗 Full Farcaster Mini App compatibility
-- 👛 Farcaster wallet integration via Wagmi
+## ✨ Features
 
----
+- 🎯 **Multiple Quiz Categories**: History, Crypto, Tech, and more
+- ⏱️ **Time-Pressured Challenges**: 10-minute time limit per quiz
+- 💎 **On-Chain Payments**: Pay with ETH on Base to unlock results
+- 👛 **Auto Wallet Connection**: Seamless wallet integration within Base app
+- 👤 **User Profile Display**: Shows Farcaster username/avatar or wallet address
+- 📱 **Mobile Optimized**: Perfect for Base mini app experience
+- 🎨 **Beautiful UI**: Modern, gradient-based design with smooth animations
+- 📊 **Detailed Results**: View score breakdown and answer explanations
+- 🔐 **Safe Area Support**: Respects device safe areas (notches, etc.)
 
-## Core Architecture
+## 🚀 Quick Start
 
-### 1. Manifest Metadata (`public/.well-known/farcaster.json`)
+### Prerequisites
 
-The manifest file tells Farcaster clients about your Mini App:
+- Node.js 18+ and npm/yarn/pnpm
+- A Base-compatible wallet (if testing payments)
+- A deployed domain with HTTPS (required for Base mini apps)
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/v0-iq-quiz-base-app.git
+cd v0-iq-quiz-base-app
+
+# Install dependencies
+npm install
+
+# Run development server
+npm run dev
+```
+
+Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## 📖 Documentation
+
+### Project Structure
+
+```
+├── app/
+│   ├── api/
+│   │   └── webhook/
+│   │       └── route.ts          # Webhook endpoint for Base events
+│   ├── globals.css                # Global styles
+│   ├── layout.tsx                 # Root layout with metadata
+│   └── page.tsx                   # Main quiz page
+├── components/
+│   ├── app-header.tsx             # Persistent header with user profile
+│   ├── answer-breakdown-screen.tsx
+│   ├── category-screen.tsx        # Quiz category selection
+│   ├── home-screen.tsx            # Home screen with categories
+│   ├── payment-gate.tsx           # Payment handling component
+│   ├── providers.tsx              # Farcaster + Wagmi providers
+│   ├── quiz-screen.tsx            # Active quiz interface
+│   ├── results-screen.tsx         # Results display
+│   ├── user-profile.tsx           # User profile component
+│   ├── wallet-auto-connect.tsx    # Auto wallet connection
+│   ├── welcome-screen.tsx         # Quiz welcome screen
+│   └── ui/
+│       └── button.tsx             # Reusable button component
+├── lib/
+│   ├── farcaster-sdk.ts           # Farcaster SDK initialization
+│   ├── quiz-data.ts               # Quiz content and data
+│   ├── utils.ts                   # Utility functions
+│   └── wagmi-config.ts            # Wagmi configuration + payment settings
+├── public/
+│   ├── .well-known/
+│   │   └── farcaster.json         # Base mini app manifest
+│   ├── icon.png                   # App icon (required)
+│   ├── hero.png                   # Hero image (required)
+│   ├── splash.png                 # Splash screen (required)
+│   └── og-image.png               # Open Graph image
+└── QUIZ_GUIDE.md                  # Guide for adding quiz content
+```
+
+### Key Files Explained
+
+#### `public/.well-known/farcaster.json`
+
+This is the **Base Mini App manifest** that tells Base about your app:
 
 ```json
 {
   "accountAssociation": {
-    "header": "...",      // Base64 encoded header with your FID
-    "payload": "...",     // Base64 encoded payload with your domain
-    "signature": "..."    // Signed message proving domain ownership
+    "header": "...",      // Base64 encoded: { fid, type, key }
+    "payload": "...",     // Base64 encoded: { domain }
+    "signature": "..."    // Cryptographic proof of domain ownership
   },
-  "frame": {
+  "baseBuilder": {
+    "allowedAddresses": ["0x..."]  // Wallet addresses allowed to build
+  },
+  "miniapp": {
     "version": "1",
     "name": "IQ Quiz Contest",
-    "iconUrl": "https://your-domain.com/icon.png",
     "homeUrl": "https://your-domain.com",
-    "imageUrl": "https://your-domain.com/og-image.png",
-    "buttonTitle": "Take IQ Quiz"
+    "iconUrl": "https://your-domain.com/icon.png",
+    // ... more metadata
   }
 }
 ```
 
-**Important**: The `domain` in the payload MUST match your deployed domain exactly.
+**⚠️ Important**: The `accountAssociation` signature is **public by design** - it's used to verify domain ownership, similar to SSL certificates. It's safe to include in public repositories.
 
-### 2. SDK Initialization (`lib/farcaster-sdk.ts`)
+#### `lib/farcaster-sdk.ts`
 
-The Farcaster SDK must call `ready()` to signal the app is loaded:
+Handles Farcaster Mini App SDK initialization:
 
-```typescript
-import sdk from "@farcaster/miniapp-sdk"
+- Checks if running in mini app context
+- Calls `sdk.actions.ready()` to signal app readiness
+- Provides utility functions for URL opening, closing app, etc.
 
-export async function initializeFarcasterSDK(): Promise<void> {
-  await sdk.actions.ready()
-  // App is now ready inside Farcaster client
-}
-```
+#### `lib/wagmi-config.ts`
 
-This is called in `app/page.tsx` on component mount.
+Wagmi configuration for Base chain:
 
-### 3. Wallet Connector Configuration (`lib/wagmi-config.ts`)
+- Configures Base chain (chain ID: 8453)
+- Sets up Farcaster's injected wallet provider
+- Defines payment configuration (recipient address, amount)
 
-Wagmi is configured with:
-- **Base chain** for transactions
-- **Farcaster Mini App SDK's ethereum provider** via injected connector
+#### `components/providers.tsx`
 
-```typescript
-import { injected } from "wagmi"
-import { base } from "wagmi/chains"
-import sdk from "@farcaster/miniapp-sdk"
+React context providers:
 
-export const wagmiConfig = createConfig({
-  chains: [base],
-  connectors: [
-    injected({
-      target: {
-        id: "farcasterFrame",
-        name: "Farcaster",
-        provider: () => sdk.wallet.ethProvider,
-      },
-    }),
-  ],
-  // ...
-})
-```
+- **FarcasterContextProvider**: Manages SDK state, user data, safe area insets
+- **WagmiProvider**: Wallet connection state
+- **QueryClientProvider**: React Query for async state
 
-### 4. Payment Flow (`components/payment-gate.tsx`)
+#### `components/wallet-auto-connect.tsx`
 
-The payment gate component handles:
+Automatically connects the user's wallet when the app opens in Base. This provides a seamless experience - no manual connection required!
 
-1. **Wallet Connection**: Uses Farcaster's injected wallet
-2. **Transaction Request**: Sends 0.0000033 ETH to configured address
-3. **Confirmation Wait**: Uses `useWaitForTransactionReceipt` hook
-4. **Score Reveal**: Only after transaction confirms
+## 🔧 Configuration
 
-```typescript
-// Payment states
-type PaymentStatus =
-  | "idle"           // Initial state
-  | "connecting"     // Wallet connecting
-  | "connected"      // Ready to pay
-  | "requesting"     // Awaiting user approval
-  | "pending"        // Transaction submitted
-  | "confirmed"      // Payment successful
-  | "rejected"       // User rejected or error
-```
-
-### 5. Quiz Flow with Payment Gating
-
-```
-Welcome → Quiz → Finish → Payment Gate → Results
-                              ↓
-                         (payment fails)
-                              ↓
-                     Back to Welcome
-```
-
----
-
-## Configuration
-
-### Update Recipient Address
+### Update Payment Recipient
 
 Edit `lib/wagmi-config.ts`:
 
 ```typescript
 export const PAYMENT_CONFIG = {
-  recipientAddress: "0xYOUR_WALLET_ADDRESS_HERE" as `0x${string}`,
+  recipientAddress: "0xYOUR_WALLET_ADDRESS" as `0x${string}`,
   paymentAmountWei: BigInt(3300000000000), // 0.0000033 ETH
   chainId: base.id,
 }
 ```
 
-### Update Meta Tags
+### Update Domain URLs
 
-Edit `app/layout.tsx` to update the frame meta tags with your domain:
+1. **Manifest** (`public/.well-known/farcaster.json`): Update all URLs to your domain
+2. **Layout** (`app/layout.tsx`): Update `fc:miniapp` metadata URLs
+3. **Base App ID**: Update `base:app_id` in `app/layout.tsx` if you have one
+
+### Account Association
+
+You need to generate account association credentials:
+
+1. Use Base/Farcaster tools to create the signature
+2. Update `public/.well-known/farcaster.json` with:
+   - `header`: Base64 encoded header
+   - `payload`: Base64 encoded domain payload
+   - `signature`: Cryptographic signature
+
+See [Base Mini Apps documentation](https://docs.base.org/docs/mini-apps) for details.
+
+### Add Quiz Content
+
+See [QUIZ_GUIDE.md](./QUIZ_GUIDE.md) for detailed instructions on adding categories, quizzes, and questions.
+
+Quick example:
 
 ```typescript
-other: {
-  "fc:frame:image": "https://your-domain.com/og-image.png",
-  "fc:frame:button:1:target": "https://your-domain.com",
-}
+// In lib/quiz-data.ts
+const myQuizzes: Quiz[] = [
+  {
+    id: "my-quiz-1",
+    name: "My Quiz",
+    description: "Test your knowledge",
+    icon: "🎯",
+    timeLimit: 600, // 10 minutes
+    questions: [
+      {
+        id: 1,
+        questionText: "What is 2 + 2?",
+        options: ["3", "4", "5", "6"],
+        correctOptionIndex: 1,
+        explanation: "2 + 2 equals 4.",
+      },
+      // ... 9 more questions
+    ],
+  },
+]
 ```
 
----
+## 🚢 Deployment
 
-## Deployment Instructions
+### Deploy to Vercel
 
-### 1. Create Account Association
-
-You need to create a signed account association proving you own the domain:
-
-```bash
-# Use Farcaster's tooling or manually create:
-# 1. Create header: { fid: YOUR_FID, type: "custody", key: "YOUR_CUSTODY_ADDRESS" }
-# 2. Create payload: { domain: "your-domain.com" }
-# 3. Sign the payload with your custody key
-# 4. Base64 encode all parts
-```
-
-### 2. Prepare Assets
-
-Create and place these files in `/public`:
-- `icon.png` - 200x200 app icon
-- `og-image.png` - 1200x630 Open Graph image
-- `splash.png` - Splash screen image
-
-### 3. Update Manifest
-
-Edit `public/.well-known/farcaster.json`:
-- Replace all `your-domain.com` with your actual domain
-- Add your account association signature
-
-### 4. Deploy to Vercel (or similar)
+1. **Connect your repository** to Vercel
+2. **Set environment variables** (if needed)
+3. **Deploy** - Vercel will auto-detect Next.js
 
 ```bash
-# Install Vercel CLI
+# Or use Vercel CLI
 npm i -g vercel
-
-# Deploy
 vercel --prod
 ```
 
-### 5. Verify Domain Alignment
+### Required Assets
 
-After deployment, verify:
-1. `https://your-domain.com/.well-known/farcaster.json` is accessible
-2. The domain in the manifest matches exactly
-3. All image URLs are valid
+Ensure these files exist in `/public`:
 
-### 6. Register with Farcaster
+- `icon.png` (200x200) - App icon
+- `hero.png` (1200x630) - Hero/OG image
+- `splash.png` (1284x2778) - Splash screen
+- `og-image.png` (1200x630) - Open Graph preview
 
-Submit your Mini App to Farcaster's directory or share the frame URL directly.
+### Post-Deployment Checklist
 
----
+- [ ] Verify `https://your-domain.com/.well-known/farcaster.json` is accessible
+- [ ] Check all image URLs are valid
+- [ ] Test wallet connection in Base app
+- [ ] Test payment flow end-to-end
+- [ ] Verify user profile displays correctly
 
-## Testing
+## 🎮 How It Works
 
-### Local Development
+### User Flow
+
+```
+1. User opens app in Base
+   ↓
+2. Wallet auto-connects (seamless!)
+   ↓
+3. User selects category → quiz
+   ↓
+4. Takes 10 questions (10 min time limit)
+   ↓
+5. Quiz finishes → Payment gate appears
+   ↓
+6. User pays 0.0000033 ETH on Base
+   ↓
+7. Results + IQ score revealed
+   ↓
+8. User can view answer breakdown
+```
+
+### Payment Flow
+
+The app uses **on-chain payments** on Base:
+
+1. User completes quiz
+2. Payment gate component requests transaction
+3. User approves payment in wallet
+4. Transaction is submitted to Base
+5. App waits for confirmation
+6. Results are revealed after confirmation
+
+**Payment Amount**: 0.0000033 ETH (configurable in `lib/wagmi-config.ts`)
+
+## 🛠️ Tech Stack
+
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS
+- **Blockchain**: [Wagmi](https://wagmi.sh/) + [Viem](https://viem.sh/)
+- **Chain**: Base (Ethereum L2)
+- **SDK**: [@farcaster/miniapp-sdk](https://github.com/farcasterxyz/miniapp-sdk)
+- **UI Components**: Radix UI + shadcn/ui
+- **State Management**: React Context + React Query
+
+## 📝 Development
+
+### Available Scripts
 
 ```bash
-npm run dev
+npm run dev      # Start development server
+npm run build    # Build for production
+npm run start    # Start production server
+npm run lint     # Run ESLint
 ```
 
-The app works in browser but wallet features require Farcaster context.
+### Environment Variables
 
-### Testing in Farcaster
+No environment variables are required by default. If you need to add API keys or other secrets:
 
-1. Deploy to a public URL
-2. Share the URL in Warpcast
-3. The Mini App should render inline
-4. Test the full payment flow
+1. Create `.env.local` file
+2. Add variables:
+   ```env
+   NEXT_PUBLIC_APP_URL=https://your-domain.com
+   # Add other variables as needed
+   ```
+3. Ensure `.env*` is in `.gitignore` (already included)
 
-### Frame Debugger
+## 🔒 Security Considerations
 
-Use [Farcaster Frame Debugger](https://warpcast.com/~/developers/frames) to validate your frame metadata.
+### Public Information
+
+The following are **safe to make public**:
+
+- ✅ Account association signature (public verification)
+- ✅ Wallet addresses (public on blockchain)
+- ✅ App metadata (public configuration)
+- ✅ Quiz questions/answers (client-side)
+
+### Private Information
+
+Never commit:
+
+- ❌ Private keys
+- ❌ API keys or secrets
+- ❌ Environment variables with sensitive data
+- ❌ `.env` files
+
+The `.gitignore` already excludes these files.
+
+### Front-End Limitations
+
+⚠️ **Note**: This app uses client-side gating. For production applications handling real payments, consider:
+
+- Server-side score verification
+- Backend payment verification before revealing results
+- Signed responses to prevent tampering
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## 🙏 Acknowledgments
+
+- Built for [Base](https://base.org/) ecosystem
+- Uses [Farcaster](https://www.farcaster.xyz/) Mini App SDK
+- Inspired by the Base Mini Apps program
+
+## 📞 Support
+
+- 🐛 **Issues**: [GitHub Issues](https://github.com/yourusername/v0-iq-quiz-base-app/issues)
+- 💬 **Discussions**: [GitHub Discussions](https://github.com/yourusername/v0-iq-quiz-base-app/discussions)
+- 📖 **Documentation**: [Base Docs](https://docs.base.org/docs/mini-apps)
+
+## 🌟 Features in Detail
+
+### Auto Wallet Connection
+
+When users open the app in Base, their wallet automatically connects - no manual steps required! This is handled by `components/wallet-auto-connect.tsx` and `components/providers.tsx`.
+
+### User Profile Display
+
+The app shows user information in the top-right corner:
+- **Farcaster users**: Avatar + username
+- **Wallet-only users**: Truncated wallet address (e.g., `0x1234...5678`)
+
+This is handled by `components/user-profile.tsx` and `components/app-header.tsx`.
+
+### Safe Area Support
+
+The app respects device safe areas (notches, home indicators) using Farcaster SDK's `safeAreaInsets`. All screens automatically adjust padding to avoid UI overlap.
+
+### Payment Gating
+
+After completing a quiz, users must pay a small amount (0.0000033 ETH) to view their results. This creates a small monetization opportunity while keeping the payment barrier low.
+
+### Multiple Categories
+
+The app supports multiple quiz categories, each with multiple quizzes. Easily extend by adding new categories in `lib/quiz-data.ts` (see [QUIZ_GUIDE.md](./QUIZ_GUIDE.md)).
 
 ---
 
-## Limitations & Considerations
-
-### Front-end Gating vs True Access Control
-
-⚠️ **Important**: This implementation uses front-end gating only. The score calculation happens client-side, meaning a determined user could:
-- Inspect the code to find answers
-- Bypass the payment check
-
-For true access control, implement:
-- Server-side score calculation
-- Payment verification on backend before returning results
-- Signed score responses
-
-### Insufficient Funds
-
-If user lacks ETH on Base:
-- Transaction will fail with "insufficient funds" error
-- UX shows "Payment Failed" with retry option
-- Consider adding a "Get ETH on Base" link
-
-### Gas Estimation
-
-The payment amount (0.0000033 ETH) is very small, but gas fees may exceed the payment itself. Consider:
-- Informing users about gas costs
-- Using a higher payment amount to make gas proportionally smaller
-
-### Network Delays
-
-Base transaction confirmation typically takes:
-- ~2 seconds for inclusion
-- May be longer during congestion
-
-The UI shows a loading state during confirmation.
-
----
-
-## File Structure
-
-```
-├── app/
-│   ├── globals.css         # Tailwind styles
-│   ├── layout.tsx          # Root layout with providers
-│   └── page.tsx            # Main quiz page with payment flow
-├── components/
-│   ├── providers.tsx       # Wagmi + React Query providers
-│   ├── payment-gate.tsx    # Payment gating component
-│   ├── welcome-screen.tsx  # Quiz intro (mentions payment)
-│   ├── quiz-screen.tsx     # Quiz questions
-│   ├── results-screen.tsx  # Score display
-│   ├── answer-breakdown-screen.tsx
-│   └── ui/
-│       └── button.tsx      # shadcn/ui button
-├── lib/
-│   ├── farcaster-sdk.ts    # SDK initialization
-│   ├── wagmi-config.ts     # Wagmi + payment config
-│   ├── quiz-data.ts        # Quiz questions
-│   └── utils.ts            # Utilities
-└── public/
-    └── .well-known/
-        └── farcaster.json  # Mini App manifest
-```
-
----
-
-## Dependencies
-
-```json
-{
-  "@farcaster/miniapp-sdk": "latest",
-  "wagmi": "^2.x",
-  "viem": "^2.x",
-  "@tanstack/react-query": "^5.x"
-}
-```
-
----
-
-## License
-
-MIT
-"# v0-iq-quiz-base-app" 
+**Made with ❤️ for the Base ecosystem**

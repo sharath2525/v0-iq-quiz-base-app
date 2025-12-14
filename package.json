@@ -1,7 +1,22 @@
 {
-  "name": "my-v0-project",
-  "version": "0.1.0",
-  "private": true,
+  "name": "iq-quiz-base-app",
+  "version": "1.0.0",
+  "description": "IQ Quiz Contest - A Base Mini App for testing your logic and pattern recognition skills",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/yourusername/v0-iq-quiz-base-app.git"
+  },
+  "keywords": [
+    "base",
+    "miniapp",
+    "quiz",
+    "farcaster",
+    "nextjs",
+    "ethereum",
+    "web3"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
