@@ -27,6 +27,7 @@
     "primaryCategory": "games",
     "tags": ["quiz", "iq", "brain", "logic", "puzzle"],
     "requiredChains": ["eip155:8453"],
+    "webhookUrl": "https://base-quizz.vercel.app/api/webhook",
     "noindex": false
   }
 }
